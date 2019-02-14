@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-6 mx-auto">
+        <h2>Edit todo</h2>
+        <form action="{% url 'todos:edit' 'post'%}" method="post" class="todo-form">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="hidden" name="id" value="{{ todo_id }}">
+          <input type="submit" value="Update">
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

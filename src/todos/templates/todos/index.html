@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-8">
+        <h2>Todos</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Title</td>
+              <th scope="col">Description</td>
+              <th scope="col">Date</td>
+              <th scope="col">Priority</td>
+              {% if user.is_authenticated %}
+              <th scope="col">Edit</td>
+              <th scope="col">Delete</td>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for todo in todos %}
+            <tr>
+              <td>{{ todo.title }}</td>
+              <td>{{ todo.description }}</td>
+              <td>{{ todo.due_time }}</td>
+              <td>{{ todo.get_priority_display }}</td>
+              {% if user.is_authenticated %}
+              <td>
+                <a class="btn btn-primary" href="{% url 'todos:edit' todo.id %}">Edit</a>
+              </td>
+              <td>
+                <a class="btn btn-danger" href="{% url 'todos:delete' todo.id %}">Delete</a>
+              </td>
+              {% endif %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% if not user.is_anonymous %}
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            {% if todos.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page=1{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}">
+                  <span aria-hidden="true">First</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ todos.previous_page_number }}{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ todos.previous_page_number }}{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}">
+                  {{ todos.previous_page_number }}
+                </a>
+              </li>
+            {% endif %}
+              <li class="page-item active">
+                <a class="page-link" href="?page={{ todos.number }}{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}">
+                  {{ todos.number }}
+                </a>
+              </li>
+            {% if todos.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ todos.next_page_number }}{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}">
+                  {{ todos.next_page_number }}
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ todos.next_page_number }}{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{ todos.paginator.num_pages }}{% if priority %}&priority={{ priority }}{% endif %}{% if due_time %}&due_time={{ due_time }}{% endif %}" aria-label="Next">
+                  <span aria-hidden="true">Last</span>
+                </a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% endif %}
+      </div>
+      <div class="col">
+        {% if user.is_authenticated %}
+        <h2>Create new todo</h2>
+        <form action="{% url 'todos:index' %}" method="post" class="form">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Create">
+        </form>
+        {% endif %}
+
+        <h2 class="mt-5">Sort</h2>
+        <form action="{% url 'todos:index' %}" class="form">
+          <p>
+            <label for="priority">Priority</label>
+            <select name="priority" id="priority">
+              <option disabled {% if not priority %} selected {% endif %}>Select priority</option>
+              <option value="priority" {% if priority == 'priority' %} selected {% endif %}>highest</option>
+              <option value="-priority" {% if priority == '-priority' %} selected {% endif %}>lowest</option>
+            </select>
+          </p>
+          <p>
+            <label for="due_time">Date</label>
+            <select name="due_time" id="due_time">
+              <option disabled {% if not due_time %} selected {% endif %}>Select date order</option>
+              <option value="due_time" {% if due_time == 'due_time' %} selected {% endif %}>asc</option>
+              <option value="-due_time" {% if due_time == '-due_time' %} selected {% endif %}>desc</option>
+            </select>
+          </p>
+          <p>
+            <input type="submit" value="Sort">
+          </p>
+        </form>
+
+        <div class="clean">
+          <h2>Clean sort</h2>
+          <a class="btn btn-primary" href="{% url 'todos:clean' %}">Clean sort</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

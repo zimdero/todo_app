@@ -1,0 +1,44 @@
+.form,
+.clean {
+  max-width: 400px;
+}
+
+.form p {
+  display: flex;
+}
+
+.form label {
+  flex: 0 1 30%;
+}
+
+.form input {
+  flex: 1;
+}
+
+input[type="submit"] {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  border-radius: 10px;
+  border: none;
+  background: #598ee0;
+  cursor: pointer;
+}
+
+input[type="submit"].delete {
+  color: #fff;
+  background: #fd6565;
+}
+
+.clean {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form ul,
+.form span {
+  display: none;
+}
